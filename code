@@ -1,0 +1,318 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sn
+
+data = pd.read_csv('train-data.csv')
+data = data.drop(columns=['Name','Unnamed: 0','Location','Fuel_Type','Transmission','Owner_Type'])
+data['Mileage'] = data['Mileage'].str.strip(' kmpl km/kg').astype(float)
+data['Engine'] = data['Engine'].str.strip(' CC').astype(float)
+data['New_Price'] = data['New_Price'].str.strip(' Cr Lakh').astype(float)
+data['Power'] = data['Power'].str.strip(' null bhp')
+data['Power'] = pd.to_numeric(data['Power'])
+data
+
+## Removing outliers
+
+data.Kilometers_Driven = data.Kilometers_Driven[data.Kilometers_Driven < 150000]
+data.Mileage = data.Mileage[data.Mileage > 5]
+data.Engine = data.Engine[data.Engine < 3400]
+data.Power = data.Power[data.Power < 275]
+data.Seats = data.Seats[data.Seats >= 2]
+
+## Dropping 'New_Price' and filling NaN values
+
+data = data.drop(columns=['New_Price'])
+data.Kilometers_Driven = data.Kilometers_Driven.fillna(data.Kilometers_Driven.median())
+data.Mileage = data.Mileage.fillna(data.Mileage.median())
+data.Engine = data.Engine.fillna(data.Engine.median())
+data.Power = data.Power.fillna(data.Power.median())
+data.Seats = data.Seats.fillna(data.Seats.median())
+data
+
+## Year graphs
+
+P_Year = data['Year'].isnull().sum() / len(data['Year'])
+labels_Year = 'Missing values', 'Values'
+sizes_Year = [P_Year * 100, (1-P_Year) * 100]
+explode_Year = (0.25, 0)
+fig_Year, ax_Year = plt.subplots()
+ax_Year.pie(sizes_Year, explode=explode_Year, labels=labels_Year, autopct='%1.2f%%',
+        shadow=True, startangle=90)
+ax_Year.axis('equal')
+plt.show()
+
+plt.xlabel('year')
+plt.ylabel('publications ')
+plt.title('Year')
+plt.hist(data['Year'],bins=(50))
+plt.show()
+
+pd.DataFrame(data['Year']).boxplot()
+plt.show()
+print(data['Year'].describe())
+
+## Kilometers_Driven graphs
+
+P_Kilometers_Driven = data['Kilometers_Driven'].isnull().sum() / len(data['Kilometers_Driven'])
+labels_Kilometers_Driven = 'Missing values', 'Values'
+sizes_Kilometers_Driven = [P_Kilometers_Driven * 100, (1-P_Kilometers_Driven) * 100]
+explode_Kilometers_Driven = (0.5, 0)
+fig_Kilometers_Driven, ax_Kilometers_Driven = plt.subplots()
+ax_Kilometers_Driven.pie(sizes_Kilometers_Driven, explode=explode_Kilometers_Driven, labels=labels_Kilometers_Driven, autopct='%1.2f%%',
+        shadow=True, startangle=90)
+ax_Kilometers_Driven.axis('equal')
+plt.show()
+
+plt.xlabel('Kilometers driven [km]')
+plt.ylabel('publications')
+plt.title('Kilometers_Driven')
+plt.hist(data['Kilometers_Driven'],bins=50)
+plt.show()
+
+pd.DataFrame(data['Kilometers_Driven']).boxplot()
+plt.show()
+print(data['Kilometers_Driven'].describe())
+
+## Mileage graphs
+
+P_Mileage = data['Mileage'].isnull().sum() / len(data['Mileage'])
+labels_Mileage = 'Missing values', 'Values'
+sizes_Mileage = [P_Mileage * 100, (1-P_Mileage) * 100]
+explode_Mileage = (0.25, 0)
+fig_Mileage, ax_Mileage = plt.subplots()
+ax_Mileage.pie(sizes_Mileage, explode=explode_Mileage, labels=labels_Mileage, autopct='%1.2f%%',
+        shadow=True, startangle=90)
+ax_Mileage.axis('equal')
+plt.show()
+
+plt.xlabel('mileage [kmpl]')
+plt.ylabel('publications')
+plt.title('Mileage')
+plt.hist(data['Mileage'],bins=50)
+plt.show()
+
+pd.DataFrame(data['Mileage']).boxplot()
+plt.show()
+print(data['Mileage'].describe())
+
+## Engine graphs
+
+P_Engine = data['Engine'].isnull().sum() / len(data['Engine'])
+labels_Engine = 'Missing values', 'Values'
+sizes_Engine = [P_Engine * 100, (1-P_Engine) * 100]
+explode_Engine = (0.5, 0)
+fig_Engine, ax_Engine = plt.subplots()
+ax_Engine.pie(sizes_Engine, explode=explode_Engine, labels=labels_Engine, autopct='%1.2f%%',
+        shadow=True, startangle=90)
+ax_Engine.axis('equal')
+plt.show()
+
+plt.xlabel('engine [CC]')
+plt.ylabel('publications')
+plt.title('Engine')
+plt.hist(data['Engine'],bins=50)
+plt.show()
+
+pd.DataFrame(data['Engine']).boxplot()
+plt.show()
+print(data['Engine'].describe())
+
+## Power graphs
+
+P_Power = data['Power'].isnull().sum() / len(data['Power'])
+labels_Power = 'Missing values', 'Values'
+sizes_Power = [P_Power * 100, (1-P_Power) * 100]
+explode_Power = (0.5, 0)
+fig_Power, ax_Power = plt.subplots()
+ax_Power.pie(sizes_Power, explode=explode_Power, labels=labels_Power, autopct='%1.2f%%',
+        shadow=True, startangle=90)
+ax_Power.axis('equal')
+plt.show()
+
+plt.xlabel('power [bhp]')
+plt.ylabel('publications')
+plt.title('Power')
+plt.hist(data['Power'],bins=100)
+plt.show()
+
+pd.DataFrame(data['Power']).boxplot()
+plt.show()
+print(data['Power'].describe())
+
+## Seats graphs
+
+P_Seats = data['Seats'].isnull().sum() / len(data['Seats'])
+labels_Seats = 'Missing values', 'Values'
+sizes_Seats = [P_Seats * 100, (1-P_Seats) * 100]
+explode_Seats = (0.5, 0)
+fig_Seats, ax_Seats = plt.subplots()
+ax_Seats.pie(sizes_Seats, explode=explode_Seats, labels=labels_Seats, autopct='%1.2f%%',
+        shadow=True, startangle=90)
+ax_Seats.axis('equal')
+plt.show()
+
+plt.xlabel('seats')
+plt.ylabel('publications')
+plt.title('Seats')
+plt.hist(data['Seats'],bins=(50))
+plt.show()
+
+pd.DataFrame(data['Seats']).boxplot()
+plt.show()
+print(data['Seats'].describe())
+
+## New_Price graphs
+
+P_New_Price = data['New_Price'].isnull().sum() / len(data['New_Price'])
+labels_New_Price = 'Missing values', 'Values'
+sizes_New_Price = [P_New_Price * 100, (1-P_New_Price) * 100]
+explode_New_Price = (0.25, 0)
+fig_New_Price, ax_New_Price = plt.subplots()
+ax_New_Price.pie(sizes_New_Price, explode=explode_New_Price, labels=labels_New_Price, autopct='%1.2f%%',
+        shadow=True, startangle=90)
+ax_New_Price.axis('equal')
+plt.show()
+
+plt.xlabel('new price [k$]')
+plt.ylabel('publications')
+plt.title('New_Price')
+plt.hist(data['New_Price'],bins=50)
+plt.show()
+
+pd.DataFrame(data['New_Price']).boxplot()
+plt.show()
+
+## Price graphs
+
+P_Price = data['Price'].isnull().sum() / len(data['Price'])
+labels_Price = 'Missing values', 'Values'
+sizes_Price = [P_Price * 100, (1-P_Price) * 100]
+explode_Price = (0.25, 0)
+fig_Price, ax_Price = plt.subplots()
+ax_Price.pie(sizes_Price, explode=explode_Price, labels=labels_Price, autopct='%1.2f%%',
+        shadow=True, startangle=90)
+ax_Price.axis('equal')
+plt.show()
+
+plt.xlabel('price [k$]')
+plt.ylabel('publications')
+plt.title('Price')
+plt.hist(data['Price'],bins=50)
+plt.show()
+
+pd.DataFrame(data['Price']).boxplot()
+plt.show()
+print(data['Price'].describe())
+
+## Correlation Matrix
+
+Corr = data.corr()
+sn.heatmap(Corr, annot=True)
+plt.xticks(rotation=55)
+plt.show()
+
+## Splitting the data into train set and test set
+
+from sklearn.model_selection import train_test_split
+X, y = data.drop('Price', axis=1), data.Price
+train_test_ratio = 0.25
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=train_test_ratio, random_state=2, shuffle=True)
+X_train.shape, y_train.shape, X_test.shape, y_test.shape
+
+## LinearRegression
+
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error
+
+LR_Regressor = LinearRegression()
+LR_Regressor.fit(X_train, y_train)
+y_pred_LR_train = LR_Regressor.predict(X_train)
+y_pred_LR_test = LR_Regressor.predict(X_test)
+print('train MAE: {}'.format(mean_absolute_error(y_train, y_pred_LR_train)))
+print('test MAE: {}'.format(mean_absolute_error(y_test, y_pred_LR_test)))
+
+p = 0
+for i in range(len(y_pred_LR_test)):
+  if y_pred_LR_test[i] < 0:
+    p = p + 1
+print('number of negative values: {}'.format(p))
+predTest = pd.DataFrame(y_pred_LR_test, columns = ['predictions'])
+print(predTest.describe())
+
+## DecisionTreeRegressor
+## hold-out
+
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_absolute_error
+
+DT_Regressor = DecisionTreeRegressor(max_depth=8, random_state=2)
+DT_Regressor.fit(X_train, y_train)
+y_pred_DT_train = DT_Regressor.predict(X_train)
+y_pred_DT_test = DT_Regressor.predict(X_test)
+print('train MAE: {}'.format(mean_absolute_error(y_train, y_pred_DT_train)))
+print('test MAE: {}'.format(mean_absolute_error(y_test, y_pred_DT_test)))
+
+pred_DT_Test = pd.DataFrame(y_pred_DT_test, columns = ['predictions'])
+print(pred_DT_Test.describe())
+
+## 10-fold cross validation
+
+from sklearn.model_selection import cross_validate
+from sklearn.metrics import mean_absolute_error, make_scorer
+
+scorer = make_scorer(mean_absolute_error)
+kfold_DT = cross_validate(estimator = DT_Regressor, X = data.drop(columns=['Price']), y = data['Price'], cv = 10, scoring = scorer, return_train_score=True)
+
+print(kfold_DT)
+print('mean train MAE: {}'.format(kfold_DT['train_score'].mean()))
+print('mean test MAE: {}'.format(kfold_DT['test_score'].mean()))
+
+## Leave-One-Out Cross-Validation
+import time
+
+start_time = time.time()
+LOOCV_DT = cross_validate(estimator = DT_Regressor, X = data.drop(columns=['Price']), y = data['Price'], cv = data.shape[0], scoring = scorer, return_train_score=True)
+print(LOOCV_DT)
+print('mean train MAE: {}'.format(LOOCV_DT['train_score'].mean()))
+print('mean test MAE: {}'.format(LOOCV_DT['test_score'].mean()))
+print("--- %s seconds ---" % (time.time() - start_time))
+
+## RandomForestRegressor
+## hold-out
+
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+
+RF_Regressor = RandomForestRegressor(n_estimators=20)
+RF_Regressor.fit(X_train, y_train)
+y_pred_RF_train = RF_Regressor.predict(X_train)
+y_pred_RF_test = RF_Regressor.predict(X_test)
+print('train MAE: {}'.format(mean_absolute_error(y_train, y_pred_RF_train)))
+print('test MAE: {}'.format(mean_absolute_error(y_test, y_pred_RF_test)))
+
+pred_RF_Test = pd.DataFrame(y_pred_RF_test, columns = ['predictions'])
+print(pred_RF_Test.describe())
+
+## 10-fold cross validation
+
+from sklearn.model_selection import cross_validate
+from sklearn.metrics import mean_absolute_error, make_scorer
+
+scorer = make_scorer(mean_absolute_error)
+kfold_RF = cross_validate(estimator = RF_Regressor, X = data.drop(columns=['Price']), y = data['Price'], cv = 10, scoring = scorer, return_train_score=True)
+
+print(kfold_RF)
+print('mean train MAE: {}'.format(kfold_RF['train_score'].mean()))
+print('mean test MAE: {}'.format(kfold_RF['test_score'].mean()))
+
+## Leave-One-Out Cross-Validation
+
+import time
+
+start_time = time.time()
+LOOCV_RF = cross_validate(estimator = RF_Regressor, X = data.drop(columns=['Price']), y = data['Price'], cv = data.shape[0], scoring = scorer, return_train_score=True)
+print(LOOCV_DT)
+print('mean train MAE: {}'.format(LOOCV_RF['train_score'].mean()))
+print('mean test MAE: {}'.format(LOOCV_RF['test_score'].mean()))
+print("--- %s seconds ---" % (time.time() - start_time))
